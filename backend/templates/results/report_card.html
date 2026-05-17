@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: Arial, sans-serif; font-size: 12px; color: #111; }
+
+  .page { width: 210mm; min-height: 297mm; padding: 15mm 15mm 10mm; }
+
+  /* Header */
+  .school-header { text-align: center; border-bottom: 3px double #333; padding-bottom: 10px; margin-bottom: 12px; }
+  .school-header img { height: 70px; margin-bottom: 6px; }
+  .school-header h1 { font-size: 20px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
+  .school-header p { font-size: 11px; color: #444; margin-top: 2px; }
+  .report-title { font-size: 14px; font-weight: bold; text-transform: uppercase;
+                  border: 2px solid #333; display: inline-block; padding: 4px 20px;
+                  margin-top: 8px; letter-spacing: 2px; }
+
+  /* Student info box */
+  .student-info { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 20px;
+                  border: 1px solid #ccc; padding: 10px; margin-bottom: 14px; background: #f9f9f9; }
+  .student-info .row { display: flex; gap: 4px; }
+  .student-info .label { font-weight: bold; min-width: 110px; }
+
+  /* Results table */
+  table { width: 100%; border-collapse: collapse; margin-bottom: 14px; }
+  thead { background: #2c3e50; color: white; }
+  th, td { border: 1px solid #ccc; padding: 6px 8px; text-align: center; }
+  th { font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
+  td:first-child { text-align: left; }
+  tbody tr:nth-child(even) { background: #f5f5f5; }
+  .grade-A { color: #1a7a1a; font-weight: bold; }
+  .grade-B { color: #2a6a9e; font-weight: bold; }
+  .grade-C { color: #e08a00; font-weight: bold; }
+  .grade-D { color: #c05000; }
+  .grade-E { color: #a01010; }
+  .grade-F { color: #c00; font-weight: bold; }
+
+  /* Summary section */
+  .summary { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+  .summary-box { border: 1px solid #ccc; padding: 10px; border-radius: 4px; }
+  .summary-box h3 { font-size: 11px; text-transform: uppercase; color: #555; margin-bottom: 8px;
+                     border-bottom: 1px solid #eee; padding-bottom: 4px; }
+  .stat-row { display: flex; justify-content: space-between; padding: 3px 0; border-bottom: 1px dotted #eee; }
+  .stat-label { color: #444; }
+  .stat-value { font-weight: bold; }
+  .position-highlight { font-size: 22px; font-weight: bold; color: #2c3e50; text-align: center;
+                         margin: 6px 0; }
+  .position-sub { font-size: 11px; color: #777; text-align: center; }
+
+  /* Grade key */
+  .grade-key { border: 1px solid #ccc; padding: 8px; margin-bottom: 14px; }
+  .grade-key h3 { font-size: 10px; text-transform: uppercase; color: #555; margin-bottom: 6px; }
+  .grade-key table { margin: 0; }
+  .grade-key th, .grade-key td { font-size: 10px; padding: 3px 8px; }
+
+  /* Remarks */
+  .remarks-section { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px; }
+  .remarks-box { border: 1px solid #ccc; padding: 10px; min-height: 60px; }
+  .remarks-box h3 { font-size: 11px; text-transform: uppercase; color: #555; margin-bottom: 6px; }
+  .signature-line { border-top: 1px solid #333; margin-top: 30px; padding-top: 4px;
+                     font-size: 10px; text-align: center; color: #555; }
+
+  /* Footer */
+  .footer { border-top: 2px solid #333; padding-top: 8px; text-align: center; font-size: 10px; color: #777; }
+  .next-term { background: #fff3cd; border: 1px solid #ffc107; padding: 6px 12px;
+               border-radius: 4px; text-align: center; margin-bottom: 14px; font-size: 11px; }
+
+  @media print { .page { padding: 10mm; } }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- School Header -->
+  <div class="school-header">
+    <h1>{{ report.school_name }}</h1>
+    <p>{{ report.school_address }}</p>
+    <div class="report-title">Student Terminal Report</div>
+  </div>
+
+  <!-- Student Info -->
+  <div class="student-info">
+    <div class="row"><span class="label">Student Name:</span> <strong>{{ report.student_name }}</strong></div>
+    <div class="row"><span class="label">Term:</span> {{ report.term_name }}</div>
+    <div class="row"><span class="label">Student ID:</span> {{ report.student_id_no }}</div>
+    <div class="row"><span class="label">Session:</span> {{ report.session_name }}</div>
+    <div class="row"><span class="label">Class:</span> {{ report.class_name }}</div>
+    <div class="row"><span class="label">No. of Students:</span> {{ report.total_students }}</div>
+  </div>
+
+  <!-- Results Table -->
+  <table>
+    <thead>
+      <tr>
+        <th>Subject</th>
+        <th>CA (40)</th>
+        <th>Exam (60)</th>
+        <th>Total (100)</th>
+        <th>Grade</th>
+        <th>Position</th>
+        <th>Remark</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for result in report.results %}
+      <tr>
+        <td>{{ result.subject_name }}</td>
+        <td>{% if result.ca_score is not None %}{{ result.ca_score }}{% else %}—{% endif %}</td>
+        <td>{% if result.exam_score is not None %}{{ result.exam_score }}{% else %}—{% endif %}</td>
+        <td>{% if result.total is not None %}<strong>{{ result.total }}</strong>{% else %}—{% endif %}</td>
+        <td class="grade-{{ result.grade }}">{{ result.grade }}</td>
+        <td>{% if result.position %}{{ result.position }}{% else %}—{% endif %}</td>
+        <td>{{ result.remark }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <!-- Summary -->
+  <div class="summary">
+    <div class="summary-box">
+      <h3>Performance Summary</h3>
+      <div class="stat-row"><span class="stat-label">Total Score</span><span class="stat-value">{{ report.total_score }}</span></div>
+      <div class="stat-row"><span class="stat-label">Average Score</span><span class="stat-value">{{ report.average }}%</span></div>
+      <div class="stat-row"><span class="stat-label">Subjects Offered</span><span class="stat-value">{{ report.results|length }}</span></div>
+    </div>
+    <div class="summary-box" style="text-align:center;">
+      <h3>Class Position</h3>
+      <div class="position-highlight">
+        {{ report.overall_position }}{% if report.overall_position == 1 %}st{% elif report.overall_position == 2 %}nd{% elif report.overall_position == 3 %}rd{% else %}th{% endif %}
+      </div>
+      <div class="position-sub">Out of {{ report.total_students }} students</div>
+    </div>
+  </div>
+
+  <!-- Grade Key -->
+  <div class="grade-key">
+    <h3>Grading Key</h3>
+    <table>
+      <thead><tr><th>Grade</th><th>Range</th><th>Remark</th></tr></thead>
+      <tbody>
+        <tr><td class="grade-A">A</td><td>70 – 100</td><td>Excellent</td></tr>
+        <tr><td class="grade-B">B</td><td>60 – 69</td><td>Very Good</td></tr>
+        <tr><td class="grade-C">C</td><td>50 – 59</td><td>Good</td></tr>
+        <tr><td class="grade-D">D</td><td>45 – 49</td><td>Pass</td></tr>
+        <tr><td class="grade-E">E</td><td>40 – 44</td><td>Below Average</td></tr>
+        <tr><td class="grade-F">F</td><td>0 – 39</td><td>Fail</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Remarks -->
+  <div class="remarks-section">
+    <div class="remarks-box">
+      <h3>Class Teacher's Remark</h3>
+      <p>&nbsp;</p>
+      <div class="signature-line">Signature &amp; Date</div>
+    </div>
+    <div class="remarks-box">
+      <h3>Principal's Remark</h3>
+      <p>&nbsp;</p>
+      <div class="signature-line">Signature &amp; Date</div>
+    </div>
+  </div>
+
+  <!-- Next Term -->
+  {% if report.next_term_begins %}
+  <div class="next-term">
+    <strong>Next Term Begins:</strong> {{ report.next_term_begins }}
+  </div>
+  {% endif %}
+
+  <div class="footer">
+    This report card is computer-generated. — {{ report.school_name }}
+  </div>
+
+</div>
+</body>
+</html>
