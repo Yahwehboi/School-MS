@@ -129,10 +129,7 @@ python app.py
 Then open `http://localhost:5000` in your browser.
 
 ---
-
-## 📸 Screenshots
-
-> *Screenshots of the website homepage, result portal, and admin panel will be added here.*
+![Homepage](screenshots/School Ms.png)
 
 ---
 
