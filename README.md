@@ -129,7 +129,7 @@ python app.py
 Then open `http://localhost:5000` in your browser.
 
 ---
-screenshots/School MS.png
+![School-MS](screenshots/School-MS.png)
 ---
 
 ## 🔮 Future Improvements
